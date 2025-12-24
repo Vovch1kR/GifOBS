@@ -1,52 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <meta charset="utf-8">
-
-  <!-- 🔥 ЗАПРЕТ КЭША HTML -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Запрет кэширования для получения актуальной версии -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
   <style>
+    :root {
+      --bg-color: transparent;
+      --transition-speed: 0.3s;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
-      width: 800px;
-      height: 800px;
-      background: transparent;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-color);
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      /* Можно ограничить максимальный размер, если нужно */
+      max-width: 800px;
+      max-height: 800px;
     }
 
     img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      display: block;
+      opacity: 0;
+      transition: opacity var(--transition-speed) ease-in-out;
+    }
+
+    img.loaded {
+      opacity: 1;
+    }
+
+    /* Индикатор загрузки (опционально) */
+    .loader {
+      position: absolute;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
 
-  <img id="gif">
+  <div id="container">
+    <div id="loader" class="loader"></div>
+    <img id="gif" alt="GIF Animation">
+  </div>
 
   <script>
-    // 🔥 МЕНЯЕШЬ ТОЛЬКО ЭТУ СТРОКУ
-    const gifUrl = "https://media1.tenor.com/m/31044VVA7iMAAAAC/mewing-cat.gif";
+    /**
+     * 🔥 НАСТРОЙКИ
+     */
+    const CONFIG = {
+      url: "https://media.tenor.com/j8dwT9wdyc8AAAAi/evernight-anime.gif",
+      forceRefresh: true // Добавлять ли метку времени для обхода кэша
+    };
 
-    const gif = document.getElementById("gif");
+    const gifElement = document.getElementById("gif");
+    const loader = document.getElementById("loader");
 
-    function reloadGif() {
-      gif.src = gifUrl + "&cb=" + Date.now();
+    function initGif() {
+      if (!CONFIG.url) return;
+
+      // Показываем лоадер, если загрузка затянулась
+      const loaderTimeout = setTimeout(() => {
+        loader.style.display = "block";
+      }, 500);
+
+      // Формируем URL
+      const finalUrl = CONFIG.forceRefresh 
+        ? `${CONFIG.url}${CONFIG.url.includes('?') ? '&' : '?'}_t=${Date.now()}`
+        : CONFIG.url;
+
+      // Обработка успешной загрузки
+      gifElement.onload = () => {
+        clearTimeout(loaderTimeout);
+        loader.style.display = "none";
+        gifElement.classList.add("loaded");
+      };
+
+      // Обработка ошибки (битая ссылка)
+      gifElement.onerror = () => {
+        clearTimeout(loaderTimeout);
+        loader.style.display = "none";
+        console.error("Ошибка загрузки GIF по адресу:", CONFIG.url);
+        // Можно поставить плейсхолдер:
+        // gifElement.src = "fallback.png";
+      };
+
+      gifElement.src = finalUrl;
     }
 
-    // первая загрузка
-    reloadGif();
-
-    // обновление каждые 2 секунды (не чаще — стабильнее)
-    setInterval(reloadGif, 2000);
+    // Запуск после полной загрузки DOM
+    window.addEventListener('DOMContentLoaded', initGif);
   </script>
 
 </body>
 </html>
-
-
