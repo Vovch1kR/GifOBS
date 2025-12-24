@@ -2,6 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8">
+
+  <!-- 🔥 ЗАПРЕТ КЭША HTML -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <style>
     html, body {
       margin: 0;
@@ -25,22 +31,20 @@
 
   <script>
     // 🔥 МЕНЯЕШЬ ТОЛЬКО ЭТУ СТРОКУ
-    const gifUrl = "https://media.tenor.com/kWgpUWMtrjcAAAAi/evil-evil-lums.gif";
+    const gifUrl = "https://media.tenor.com/ROsr8zHJ74YAAAAi/divanavr-hip-sway.gif";
 
     const gif = document.getElementById("gif");
 
     function reloadGif() {
-      gif.src = gifUrl + "?cache=" + Date.now();
+      gif.src = gifUrl + "&cb=" + Date.now();
     }
 
     // первая загрузка
     reloadGif();
 
-    // обновление раз в секунду
-    setInterval(reloadGif, 1000);
+    // обновление каждые 2 секунды (не чаще — стабильнее)
+    setInterval(reloadGif, 2000);
   </script>
 
 </body>
 </html>
-
-
