@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 800px;
+      height: 800px;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* cover — если нужно растягивать с обрезкой */
+    }
+  </style>
+</head>
+<body>
+  <img id="gif" src="https://media.tenor.com/j8dwT9wdyc8AAAAi/evernight-anime.gif">
+
+  <script>
+    setInterval(() => {
+      const gif = document.getElementById("gif");
+      const baseUrl = "https://media.tenor.com/j8dwT9wdyc8AAAAi/evernight-anime.gif";
+      gif.src = baseUrl + "?cache=" + Date.now();
+    }, 1000);
+  </script>
+</body>
+</html>
